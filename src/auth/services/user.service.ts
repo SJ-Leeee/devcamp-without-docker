@@ -13,7 +13,7 @@ export class UserService {
     const user = await this.userRepo.findOneByEmail(dto.email);
     if (user) {
       throw new BusinessException(
-        'user',
+        'auth',
         `${dto.email} already exist`,
         `${dto.email} already exist`,
         HttpStatus.BAD_REQUEST,

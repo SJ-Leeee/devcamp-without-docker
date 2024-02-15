@@ -26,7 +26,7 @@ import { DataSource } from 'typeorm';
         password: configService.get<string>('MYSQL_PASSWORD'),
         database: configService.get<string>('MYSQL_DATABASE'),
         autoLoadEntities: true,
-        synchronize: true, // 개발 환경에서만 true로 설정
+        synchronize: false, // 개발 환경에서만 true로 설정
         logging: true, // 개발 환경에서만 true로 설정
       }),
       async dataSourceFactory(options) {

@@ -16,7 +16,7 @@ export class AuthController {
     return this.authService.login(loginReqDto.email, loginReqDto.password);
   }
 
-  @Post('signup')
+  @Post('signup') // 첫번째
   async signup(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.userService.createUser(createUserDto);
   }
