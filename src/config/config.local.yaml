@@ -1,0 +1,13 @@
+env: local
+
+http:
+  host: 'localhost'
+  port: 6583
+
+database:
+  type: 'mysql'
+  host: '127.0.0.1'
+  username: 'test'
+  password: 'test'
+  port: 3306
+  database: 'test'

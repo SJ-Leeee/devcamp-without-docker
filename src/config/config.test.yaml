@@ -1,0 +1,13 @@
+env: test
+
+http:
+  host: 'localhost'
+  port: 6583
+
+database:
+  type: 'mysql'
+  host: ''
+  username: ''
+  password: ''
+  port: 3306
+  database: ''
