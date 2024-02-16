@@ -29,7 +29,6 @@ async function bootstrap() {
   );
   // 데이터 형식 수정해야함 문제는 x
   app.useGlobalFilters(new BusinessExceptionFilter());
-
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT');
   const env = configService.get<string>('ENV');

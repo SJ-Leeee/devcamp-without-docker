@@ -1,6 +1,11 @@
 import { HttpStatus } from '@nestjs/common';
 
-export type ErrorDomain = 'auth' | 'generic' | 'payment' | 'user';
+export type ErrorDomain =
+  | 'auth'
+  | 'generic'
+  | 'payment'
+  | 'user'
+  | 'invalid-token';
 
 export class BusinessException extends Error {
   public readonly id: string;

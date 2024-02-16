@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import {
   AccessLog,
   AccessToken,
@@ -18,12 +18,13 @@ import { AuthService, TokenBlacklistService, UserService } from './services';
 import { AuthController } from './controllers';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TokenValidationMiddleware } from './middlewares/tokenValidation.middleware';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: `.env.local`,
-    }),    
+    }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -66,4 +67,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     TokenBlacklistRepository,
   ],
 })
-export class AuthModule {}
+export class AuthModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(TokenValidationMiddleware).forRoutes('auth/logout'); //users 경로에서 GET 요청에만 등록
+  }
+}
