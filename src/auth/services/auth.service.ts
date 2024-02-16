@@ -36,6 +36,7 @@ export class AuthService {
   async login(email: string, plainPassword: string): Promise<LoginResDto> {
     const user = await this.validateUser(email, plainPassword);
     const payload: TokenPayload = this.createTokenPayload(user.id);
+    // 토큰을 만들었다.
 
     const [accessToken, refreshToken] = await Promise.all([
       this.createAccessToken(user, payload),
@@ -50,6 +51,7 @@ export class AuthService {
 
   async logout(accessToken: string, refreshToken: string): Promise<void> {
     const [jtiAccess, jtiRefresh] = await Promise.all([
+      // 비동기 함수의 병렬처리를 위해서
       this.jwtService.verifyAsync(accessToken, {
         secret: this.configService.get<string>('JWT_SECRET'),
       }),
@@ -60,13 +62,13 @@ export class AuthService {
     await Promise.all([
       this.addToBlacklist(
         accessToken,
-        jtiAccess,
+        jtiAccess.jti,
         'access',
         'ACCESS_TOKEN_EXPIRY',
       ),
       this.addToBlacklist(
         refreshToken,
-        jtiRefresh,
+        jtiRefresh.jti,
         'refresh',
         'REFRESH_TOKEN_EXPIRY',
       ),

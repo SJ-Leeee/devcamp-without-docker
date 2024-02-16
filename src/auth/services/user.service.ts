@@ -9,7 +9,7 @@ import { BusinessException } from '../../exception';
 export class UserService {
   constructor(private readonly userRepo: UserRepository) {}
 
-  async createUser(dto: CreateUserDto): Promise<User> {
+  async createUser(dto: CreateUserDto): Promise<any> {
     const user = await this.userRepo.findOneByEmail(dto.email);
     if (user) {
       throw new BusinessException(

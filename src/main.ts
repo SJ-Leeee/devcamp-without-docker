@@ -5,30 +5,29 @@ import { corsOption, getNestOptions } from './app.options';
 import { ConfigService } from '@nestjs/config';
 import { initializeTransactionalContext } from 'typeorm-transactional';
 import { setSwagger } from './app.swagger';
-import { ValidationPipe } from '@nestjs/common';
+import { HttpStatus, ValidationPipe } from '@nestjs/common';
 declare const module: any;
 
 async function bootstrap() {
   initializeTransactionalContext();
 
   const app = await NestFactory.create(AppModule, getNestOptions());
-  app.useGlobalPipes(new ValidationPipe());
-  // new ValidationPipe({
-  //   exceptionFactory: (errors) => {
-  //     const allConstraintserrors = errors.map((error) =>
-  //       JSON.stringify(error.constraints),
-  //     );
-  //     throw new BusinessException(
-  //       'auth',
-  //       allConstraintserrors.join(','),
-  //       `validation false!!`,
-  //       HttpStatus.BAD_REQUEST,
-  //     );
-  //   },
-  // }),
-
-  // app.useGlobalPipes(new ValidationPipe());
-
+  app.useGlobalPipes(
+    new ValidationPipe({
+      exceptionFactory: (errors) => {
+        const allConstraintserrors = errors.map((error) =>
+          JSON.stringify(error.constraints),
+        );
+        throw new BusinessException(
+          'auth',
+          allConstraintserrors.join(', '),
+          `validation false!!`,
+          HttpStatus.BAD_REQUEST,
+        );
+      },
+    }),
+  );
+  // 데이터 형식 수정해야함 문제는 x
   app.useGlobalFilters(new BusinessExceptionFilter());
 
   const configService = app.get(ConfigService);

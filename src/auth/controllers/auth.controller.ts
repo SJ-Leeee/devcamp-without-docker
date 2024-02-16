@@ -11,7 +11,7 @@ export class AuthController {
     private readonly userService: UserService,
   ) {}
 
-  @Post('login')
+  @Post('login') // 주요키를 지정하지 않을경우 mysql은 자동증가정수 혹은 uuid를 만든다.
   async login(@Body() loginReqDto: LoginReqDto): Promise<LoginResDto> {
     return this.authService.login(loginReqDto.email, loginReqDto.password);
   }
@@ -19,6 +19,14 @@ export class AuthController {
   @Post('signup') // 첫번째
   async signup(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.userService.createUser(createUserDto);
+  }
+
+  @Post('logout')
+  async logout(@Body() LogoutDto: LoginResDto) {
+    return this.authService.logout(
+      LogoutDto.accessToken,
+      LogoutDto.refreshToken,
+    );
   }
 
   @Post('refresh')
