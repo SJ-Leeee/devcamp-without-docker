@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as argon2 from 'argon2';
 import {
   AccessLogRepository,
@@ -13,6 +13,8 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { LoginResDto } from '../dto';
 import { TokenBlacklistService } from './token-blacklist.service';
+import { RefreshReqDto } from '../dto/refresh-req.dto';
+import { RefreshResDto } from '../dto/refresh-res.dto';
 
 export type TokenPayload = {
   sub: string;
@@ -75,13 +77,15 @@ export class AuthService {
     ]);
   }
 
-  async refreshAccessToken(refreshToken: string): Promise<string> {
+  async refreshAccessToken(refreshToken: string): Promise<RefreshResDto> {
     try {
-      const payload = await this.jwtService.verifyAsync(refreshToken, {
+      const plainPayload = await this.jwtService.verifyAsync(refreshToken, {
         secret: this.configService.get<string>('JWT_SECRET'),
       });
 
-      const user = await this.userRepository.findOneBy({ id: payload.sub });
+      const user = await this.userRepository.findOneBy({
+        id: plainPayload.sub,
+      });
       if (!user) {
         throw new BusinessException(
           'auth',
@@ -90,8 +94,9 @@ export class AuthService {
           HttpStatus.UNAUTHORIZED,
         );
       }
-
-      return this.createAccessToken(user, payload);
+      const { exp, ...payload } = plainPayload;
+      const newAccessToken = await this.createAccessToken(user, payload);
+      return { accessToken: newAccessToken };
     } catch (error) {
       throw new BusinessException(
         'auth',
@@ -149,7 +154,6 @@ export class AuthService {
       token,
       expiresAt,
     );
-
     return token;
   }
 

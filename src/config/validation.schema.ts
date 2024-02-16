@@ -9,9 +9,9 @@ export const validationSchema = Joi.object({
   JWT_SECRET: Joi.string().required(),
 
   // DB
-  DB_HOST: Joi.string().required(),
-  DB_PORT: Joi.number().required(),
-  DB_USERNAME: Joi.string().required(),
-  DB_PASSWORD: Joi.string().required(),
-  DB_DATABASE: Joi.string().required(),
+  MYSQL_HOST: Joi.string().required(),
+  MYSQL_PORT: Joi.number().required(),
+  MYSQL_USERNAME: Joi.string().required(),
+  MYSQL_PASSWORD: Joi.string().required(),
+  MYSQL_DATABASE: Joi.string().required(),
 });
