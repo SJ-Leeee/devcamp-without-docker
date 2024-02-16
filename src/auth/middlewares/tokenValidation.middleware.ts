@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Response, Request, NextFunction } from 'express';
 import { TokenBlacklistService } from '../services';
 import { BusinessException } from 'src/exception';
+import { error } from 'console';
 
 @Injectable()
 export class TokenValidationMiddleware implements NestMiddleware {
@@ -16,7 +17,7 @@ export class TokenValidationMiddleware implements NestMiddleware {
     try {
       const accessToken = request.body.accessToken;
       const refreshToken = request.body.refreshToken;
-      const [jtiAccess, jtiRefresh] = await Promise.all([
+      const [decordingAccess, decordingRefresh] = await Promise.all([
         // 비동기 함수의 병렬처리를 위해서
         this.jwtService.verifyAsync(accessToken, {
           secret: this.configService.get<string>('JWT_SECRET'),
@@ -25,20 +26,14 @@ export class TokenValidationMiddleware implements NestMiddleware {
           secret: this.configService.get<string>('JWT_SECRET'),
         }),
       ]);
-      console.log('미들웨어실행');
       const [accessTokenInBlacklist, refreshTokenInBlacklist] =
         await Promise.all([
-          this.tokenBlacklistService.isTokenBlacklisted(jtiAccess.jti),
-          this.tokenBlacklistService.isTokenBlacklisted(jtiRefresh.jti),
+          this.tokenBlacklistService.isTokenBlacklisted(decordingAccess.jti),
+          this.tokenBlacklistService.isTokenBlacklisted(decordingRefresh.jti),
         ]);
 
       if (accessTokenInBlacklist || refreshTokenInBlacklist) {
-        throw new BusinessException(
-          'invalid-token',
-          'token in blacklist',
-          'token in blacklist',
-          HttpStatus.UNAUTHORIZED,
-        );
+        throw new error();
       }
     } catch (error) {
       throw new BusinessException(

@@ -1,9 +1,10 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseInterceptors } from '@nestjs/common';
 import { AuthService, UserService } from '../services';
 import { CreateUserDto, LoginReqDto, LoginResDto } from '../dto';
 import { User } from '../entities';
 import { RefreshReqDto } from '../dto/refresh-req.dto';
 import { RefreshResDto } from '../dto/refresh-res.dto';
+import { LoggingInterceptor } from 'src/interceptors/accessLog.interceptor';
 
 @Controller('auth')
 export class AuthController {
@@ -12,6 +13,7 @@ export class AuthController {
     private readonly userService: UserService,
   ) {}
 
+  @UseInterceptors(LoggingInterceptor)
   @Post('login') // 주요키를 지정하지 않을경우 mysql은 자동증가정수 혹은 uuid를 만든다.
   async login(@Body() loginReqDto: LoginReqDto): Promise<LoginResDto> {
     return this.authService.login(loginReqDto.email, loginReqDto.password);
@@ -22,12 +24,9 @@ export class AuthController {
     return this.userService.createUser(createUserDto);
   }
 
-  @Post('logout') // 토큰이 변조된 경우 생각
-  async logout(@Body() LogoutDto: LoginResDto) {
-    return this.authService.logout(
-      LogoutDto.accessToken,
-      LogoutDto.refreshToken,
-    );
+  @Post('logout') // 토큰검증 미들웨어
+  async logout(@Body() tokenDto: LoginResDto) {
+    return this.authService.logout(tokenDto.accessToken, tokenDto.refreshToken);
   }
 
   @Post('refresh') // 프론트에서 인터셉터를 이용해 액세스토큰을 재발급해주는 api
