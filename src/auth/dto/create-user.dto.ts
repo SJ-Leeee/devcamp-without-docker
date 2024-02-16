@@ -21,9 +21,8 @@ export class CreateUserDto extends PickType(User, [
   password: string;
 
   @IsString()
-  @Length(1, 50)
-  phone: string;
+  phone: string = '00000000000';
 
   @IsIn(['admin', 'user'])
-  role: UserRole;
+  role: UserRole = 'admin';
 }

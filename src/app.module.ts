@@ -12,7 +12,7 @@ import { DataSource } from 'typeorm';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: `.env.local`,
+      envFilePath: `.env`,
       validationSchema,
     }),
     TypeOrmModule.forRootAsync({
