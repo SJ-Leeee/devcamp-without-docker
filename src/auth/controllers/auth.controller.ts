@@ -1,10 +1,17 @@
-import { Body, Controller, Post, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { AuthService, UserService } from '../services';
 import { CreateUserDto, LoginReqDto, LoginResDto } from '../dto';
 import { User } from '../entities';
 import { RefreshReqDto } from '../dto/refresh-req.dto';
 import { RefreshResDto } from '../dto/refresh-res.dto';
 import { LoggingInterceptor } from 'src/interceptors/accessLog.interceptor';
+import { JwtAuthGuard } from 'src/guards/jwtAuth.guards';
 
 @Controller('auth')
 export class AuthController {
@@ -24,6 +31,7 @@ export class AuthController {
     return this.userService.createUser(createUserDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('logout') // 토큰검증 미들웨어
   async logout(@Body() tokenDto: LoginResDto) {
     return this.authService.logout(tokenDto.accessToken, tokenDto.refreshToken);

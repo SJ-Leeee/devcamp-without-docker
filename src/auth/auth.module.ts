@@ -18,7 +18,7 @@ import { AuthService, TokenBlacklistService, UserService } from './services';
 import { AuthController } from './controllers';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TokenValidationMiddleware } from './middlewares/tokenValidation.middleware';
+import { TokenExistingMiddleware } from '../middlewares/tokenExistingValidation.middleware';
 
 @Module({
   imports: [
@@ -69,6 +69,6 @@ import { TokenValidationMiddleware } from './middlewares/tokenValidation.middlew
 })
 export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(TokenValidationMiddleware).forRoutes('auth/logout'); //users 경로에서 GET 요청에만 등록
+    consumer.apply(TokenExistingMiddleware).forRoutes('auth/logout'); //users 경로에서 GET 요청에만 등록
   }
 }

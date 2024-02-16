@@ -2,26 +2,22 @@ import { HttpStatus, Injectable, NestMiddleware } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Response, Request, NextFunction } from 'express';
-import { TokenBlacklistService } from '../services';
+import { TokenBlacklistService } from '../auth/services';
 import { BusinessException } from 'src/exception';
 import { error } from 'console';
 
 @Injectable()
-export class TokenValidationMiddleware implements NestMiddleware {
-  constructor() // private readonly jwtService: JwtService,
-  // private readonly configService: ConfigService,
-  // private readonly tokenBlacklistService: TokenBlacklistService,
-  {}
+export class TokenExistingMiddleware implements NestMiddleware {
+  constructor() {} // private readonly tokenBlacklistService: TokenBlacklistService, // private readonly configService: ConfigService, // private readonly jwtService: JwtService,
   async use(request: Request, res: Response, next: NextFunction) {
     try {
       const accessToken = request.body.accessToken;
-      const refreshToken = request.body.refreshToken;
-      if (!accessToken || !refreshToken) throw error;
+      if (!accessToken) throw error;
     } catch (error) {
       throw new BusinessException(
         'invalid-token',
-        'fail-token-validation',
-        'fail token validation',
+        'token is not exist',
+        'token is not exist',
         HttpStatus.UNAUTHORIZED,
       );
     }
