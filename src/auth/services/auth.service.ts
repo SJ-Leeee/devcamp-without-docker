@@ -209,4 +209,8 @@ export class AuthService {
 
     return new Date(Date.now() + expiresInMilliseconds);
   }
+
+  // async findOneById(id:string):Promise<User>{
+  //   return user
+  // }
 }
