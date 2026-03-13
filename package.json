@@ -40,7 +40,7 @@
     "express-basic-auth": "^1.2.1",
     "js-yaml": "^4.1.0",
     "jsonwebtoken": "^9.0.1",
-    "mysql2": "^3.9.4",
+    "mysql2": "^3.11.0",
     "nest-winston": "^1.9.3",
     "node-gyp": "^9.4.0",
     "passport": "^0.6.0",
